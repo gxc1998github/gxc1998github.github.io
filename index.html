@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Daily Check-in</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: #4285f4;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .form-section {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #4285f4;
+        }
+        
+        .location-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .location-button {
+            background: #34a853;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .location-button:hover {
+            background: #2d8f47;
+        }
+        
+        .location-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .location-info {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 10px;
+            border-left: 4px solid #34a853;
+        }
+        
+        .location-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .location-info strong {
+            color: #333;
+        }
+        
+        .submit-button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        
+        .submit-button:hover {
+            background: #3367d6;
+        }
+        
+        .submit-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .error {
+            color: #ea4335;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .success {
+            color: #34a853;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        
+        .required {
+            color: #ea4335;
+        }
+        
+        .status-message {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        .status-error {
+            background: #fce8e6;
+            color: #d93025;
+            border: 1px solid #d93025;
+        }
+        
+        .status-success {
+            background: #e6f4ea;
+            color: #137333;
+            border: 1px solid #137333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📍 Teacher Daily Check-in</h1>
+            <p>Please complete your daily attendance verification</p>
+        </div>
+        
+        <div class="form-section">
+            <form id="teacherForm">
+                <div class="form-group">
+                    <label for="teacherName">Full Name <span class="required">*</span></label>
+                    <input type="text" id="teacherName" name="teacherName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="teacherId">Teacher ID Number <span class="required">*</span></label>
+                    <input type="text" id="teacherId" name="teacherId" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schoolAssigned">Assigned School <span class="required">*</span></label>
+                    <select id="schoolAssigned" name="schoolAssigned" required>
+                        <option value="">Select your school</option>
+                        <option value="Central Primary School">Central Primary School</option>
+                        <option value="Mountain View Elementary">Mountain View Elementary</option>
+                        <option value="Riverside Secondary School">Riverside Secondary School</option>
+                        <option value="Valley High School">Valley High School</option>
+                        <option value="Coastal Academy">Coastal Academy</option>
+                        <!-- Add more schools as needed -->
+                    </select>
+                </div>
+                
+                <div class="location-section">
+                    <h3>📍 Location Verification</h3>
+                    <p style="margin-bottom: 15px; color: #666;">Click the button below to capture your current location:</p>
+                    
+                    <button type="button" id="getLocationBtn" class="location-button">
+                        📍 Get My Current Location
+                    </button>
+                    
+                    <div id="locationInfo" class="location-info" style="display: none;">
+                        <p><strong>Latitude:</strong> <span id="latitude">-</span></p>
+                        <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
+                        <p><strong>Accuracy:</strong> <span id="accuracy">-</span> meters</p>
+                        <p><strong>Timestamp:</strong> <span id="timestamp">-</span></p>
+                    </div>
+                    
+                    <div id="locationError" class="error" style="display: none;"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkInTime">Check-in Time <span class="required">*</span></label>
+                    <select id="checkInTime" name="checkInTime" required>
+                        <option value="">Select check-in time</option>
+                        <option value="Morning Arrival (7:00-8:30 AM)">Morning Arrival (7:00-8:30 AM)</option>
+                        <option value="Mid-day Check (12:00-1:00 PM)">Mid-day Check (12:00-1:00 PM)</option>
+                        <option value="End of Day (3:00-5:00 PM)">End of Day (3:00-5:00 PM)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="additionalNotes">Additional Notes (Optional)</label>
+                    <input type="text" id="additionalNotes" name="additionalNotes" placeholder="Any additional information...">
+                </div>
+                
+                <div id="statusMessage" class="status-message" style="display: none;"></div>
+                
+                <button type="submit" id="submitBtn" class="submit-button" disabled>
+                    Submit Check-in
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentLocation = null;
+        
+        // Check location permission status first
+        async function checkLocationPermission() {
+            if (!navigator.permissions) {
+                return 'unknown';
+            }
+            
+            try {
+                const permission = await navigator.permissions.query({name: 'geolocation'});
+                return permission.state; // 'granted', 'denied', or 'prompt'
+            } catch (error) {
+                return 'unknown';
+            }
+        }
+
+        // Get location button functionality
+        document.getElementById('getLocationBtn').addEventListener('click', async function() {
+            const button = this;
+            const locationInfo = document.getElementById('locationInfo');
+            const locationError = document.getElementById('locationError');
+            
+            // Clear previous errors
+            locationError.style.display = 'none';
+            locationInfo.style.display = 'none';
+            
+            // Check HTTPS first
+            if (!checkHTTPS()) {
+                return;
+            }
+            
+            button.disabled = true;
+            button.textContent = '📍 Checking permissions...';
+            
+            if (!navigator.geolocation) {
+                showLocationError('❌ Geolocation is not supported by this browser. Please use Chrome, Firefox, or Safari.');
+                button.disabled = false;
+                button.textContent = '📍 Get My Current Location';
+                return;
+            }
+            
+            // Check permission status
+            const permissionStatus = await checkLocationPermission();
+            console.log('Permission status:', permissionStatus);
+            
+            if (permissionStatus === 'denied') {
+                showLocationError(`
+                    ❌ Location access is currently blocked.<br><br>
+                    <strong>To fix this:</strong><br>
+                    1. Click the 🔒 lock icon next to the address bar<br>
+                    2. Click "Location" and select "Allow"<br>
+                    3. Click "Reset permissions" button<br>
+                    4. Refresh this page and try again
+                `);
+                button.disabled = false;
+                button.textContent = '📍 Try Again';
+                return;
+            }
+            
+            button.textContent = '📍 Getting location...';
+            
+            // Show helpful instructions for first-time users
+            if (permissionStatus === 'prompt' || permissionStatus === 'unknown') {
+                showLocationError('💡 Your browser will ask for location permission. Please click "Allow" when prompted.', 'info');
+            }
+            
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 20000,  // Increased timeout to 20 seconds
+                maximumAge: 0    // Always get fresh location
+            };
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    // Hide the instruction message
+                    locationError.style.display = 'none';
+                    
+                    currentLocation = {
+                        latitude: position.coords.latitude,
+                        longitude: position.coords.longitude,
+                        accuracy: position.coords.accuracy,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    
+                    // Display location info
+                    document.getElementById('latitude').textContent = currentLocation.latitude.toFixed(6);
+                    document.getElementById('longitude').textContent = currentLocation.longitude.toFixed(6);
+                    document.getElementById('accuracy').textContent = Math.round(currentLocation.accuracy);
+                    document.getElementById('timestamp').textContent = currentLocation.timestamp;
+                    
+                    locationInfo.style.display = 'block';
+                    button.textContent = '✅ Location Captured Successfully';
+                    button.style.background = '#34a853';
+                    
+                    // Show success message
+                    showLocationError('✅ Location captured successfully! Accuracy: ' + Math.round(currentLocation.accuracy) + ' meters', 'success');
+                    
+                    // Enable submit button
+                    checkFormValid();
+                },
+                function(error) {
+                    console.error('Geolocation error:', error);
+                    let errorMessage = '';
+                    let helpText = '';
+                    
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            errorMessage = '❌ Location permission was denied.';
+                            helpText = `
+                                <br><strong>Quick Fix:</strong><br>
+                                1. Click the 🔒 lock icon in the address bar<br>
+                                2. Find "Location" and change it to "Allow"<br>
+                                3. OR click "Reset permissions" button above<br>
+                                4. Refresh the page (Ctrl+F5 or Cmd+R)<br>
+                                5. Try again<br><br>
+                                <strong>Still not working?</strong><br>
+                                • Clear your browser cache<br>
+                                • Try in an incognito/private window<br>
+                                • Check if location services are enabled on your device
+                            `;
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            errorMessage = '❌ Your location could not be determined.';
+                            helpText = `
+                                <br><strong>Possible solutions:</strong><br>
+                                • Make sure GPS/Location services are enabled on your device<br>
+                                • Try moving to an area with better signal<br>
+                                • If you're indoors, try going near a window<br>
+                                • Check your device's location settings
+                            `;
+                            break;
+                        case error.TIMEOUT:
+                            errorMessage = '⏱️ Location request took too long.';
+                            helpText = `
+                                <br><strong>Please try:</strong><br>
+                                • Make sure you have a good internet connection<br>
+                                • Try again in a moment<br>
+                                • Move to an area with better signal reception<br>
+                                • Try refreshing the page and trying again
+                            `;
+                            break;
+                        default:
+                            errorMessage = '❌ An unknown error occurred while getting location.';
+                            helpText = '<br>Please refresh the page (Ctrl+F5) and try again.';
+                            break;
+                    }
+                    
+                    showLocationError(errorMessage + helpText);
+                    button.disabled = false;
+                    button.textContent = '📍 Try Again';
+                },
+                options
+            );
+        });
+        
+        function showLocationError(message, type = 'error') {
+            const locationError = document.getElementById('locationError');
+            locationError.innerHTML = message;
+            
+            // Set appropriate styling based on type
+            if (type === 'success') {
+                locationError.className = 'success';
+            } else if (type === 'info') {
+                locationError.className = 'error';
+                locationError.style.background = '#e3f2fd';
+                locationError.style.color = '#1565c0';
+                locationError.style.border = '1px solid #1565c0';
+            } else {
+                locationError.className = 'error';
+            }
+            
+            locationError.style.display = 'block';
+        }
+
+        // Check if page is served over HTTPS
+        function checkHTTPS() {
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                showLocationError('⚠️ IMPORTANT: This form must be accessed via HTTPS for location services to work. Please contact your IT administrator.');
+                return false;
+            }
+            return true;
+        }
+        
+        function checkFormValid() {
+            const form = document.getElementById('teacherForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            let allValid = true;
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allValid = false;
+                }
+            });
+            
+            // Also check if location is captured
+            if (!currentLocation) {
+                allValid = false;
+            }
+            
+            submitBtn.disabled = !allValid;
+        }
+        
+        // Check form validity on input changes
+        document.getElementById('teacherForm').addEventListener('input', checkFormValid);
+        document.getElementById('teacherForm').addEventListener('change', checkFormValid);
+        
+        // Form submission
+        document.getElementById('teacherForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!currentLocation) {
+                showStatusMessage('Please capture your location first.', 'error');
+                return;
+            }
+            
+            const formData = new FormData(this);
+            const submitData = {
+                timestamp: new Date().toISOString(),
+                teacherName: formData.get('teacherName'),
+                teacherId: formData.get('teacherId'),
+                schoolAssigned: formData.get('schoolAssigned'),
+                checkInTime: formData.get('checkInTime'),
+                additionalNotes: formData.get('additionalNotes'),
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                accuracy: currentLocation.accuracy,
+                locationTimestamp: currentLocation.timestamp
+            };
+            
+            // Simulate form submission (replace with actual Google Sheets API call)
+            submitToGoogleSheets(submitData);
+        });
+        
+        function submitToGoogleSheets(data) {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            
+            // This is where you would integrate with Google Sheets API
+            // For now, we'll simulate the submission
+            console.log('Submitting data:', data);
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                showStatusMessage('✅ Check-in submitted successfully!', 'success');
+                submitBtn.textContent = 'Submitted';
+                
+                // Reset form after 3 seconds
+                setTimeout(() => {
+                    location.reload();
+                }, 3000);
+            }, 2000);
+        }
+        
+        function showStatusMessage(message, type) {
+            const statusMessage = document.getElementById('statusMessage');
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+        }
+        
+        // Initialize
+        checkFormValid();
+    </script>
+</body>
+</html>
