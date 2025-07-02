@@ -180,41 +180,41 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📍 Teacher Daily Check-in</h1>
-            <p>Please complete your daily attendance verification</p>
+            <h1>📍Diáriu Prezensa Manorin</h1>
+            <p>Favór kompleta formuláriu ida-nee hodi verifika ita-nia prezensa</p>
         </div>
         
         <div class="form-section">
             <form id="teacherForm">
                 <div class="form-group">
-                    <label for="teacherName">Full Name <span class="required">*</span></label>
+                    <label for="teacherName">Naran Kompletu <span class="required">*</span></label>
                     <input type="text" id="teacherName" name="teacherName" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="teacherId">Teacher ID Number <span class="required">*</span></label>
+                    <label for="teacherId">Númeru ID Manorin <span class="required">*</span></label>
                     <input type="text" id="teacherId" name="teacherId" required>
                 </div>
                 
                 <div class="form-group">
-                    <label for="schoolAssigned">Assigned School <span class="required">*</span></label>
+                    <label for="schoolAssigned">Eskola <span class="required">*</span></label>
                     <select id="schoolAssigned" name="schoolAssigned" required>
-                        <option value="">Select your school</option>
-                        <option value="Central Primary School">Central Primary School</option>
-                        <option value="Mountain View Elementary">Mountain View Elementary</option>
-                        <option value="Riverside Secondary School">Riverside Secondary School</option>
-                        <option value="Valley High School">Valley High School</option>
-                        <option value="Coastal Academy">Coastal Academy</option>
+                        <option value="">Hili Eskola</option>
+                        <option value="EBC Dili">EBC Dili</option>
+                        <option value="EBC Ermera">EBC Ermera</option>
+                        <option value="EBC Baucau<">EBC Baucau</option>
+                        <option value=">EBC Ataúro">EBC Ataúro</option>
+                        <option value="EBC Maliana">EBC Maliana</option>
                         <!-- Add more schools as needed -->
                     </select>
                 </div>
                 
                 <div class="location-section">
-                    <h3>📍 Location Verification</h3>
+                    <h3>📍 Verifika lokalizasaun</h3>
                     <p style="margin-bottom: 15px; color: #666;">Click the button below to capture your current location:</p>
                     
                     <button type="button" id="getLocationBtn" class="location-button">
-                        📍 Get My Current Location
+                        📍 Hatudu hau-nia lokalizasaun
                     </button>
                     
                     <div id="locationInfo" class="location-info" style="display: none;">
@@ -229,24 +229,23 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="checkInTime">Check-in Time <span class="required">*</span></label>
+                    <label for="checkInTime">Oras Tama <span class="required">*</span></label>
                     <select id="checkInTime" name="checkInTime" required>
-                        <option value="">Select check-in time</option>
-                        <option value="Morning Arrival (7:00-8:30 AM)">Morning Arrival (7:00-8:30 AM)</option>
-                        <option value="Mid-day Check (12:00-1:00 PM)">Mid-day Check (12:00-1:00 PM)</option>
-                        <option value="End of Day (3:00-5:00 PM)">End of Day (3:00-5:00 PM)</option>
+                        <option value="">Hili Oras</option>
+                        <option value="Dadeer (7:00-8:30 AM)">Morning Arrival (7:00-8:30 AM)</option>
+                        <option value="Meiudia (12:00-1:00 PM)">Mid-day Check (12:00-1:00 PM)</option>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="additionalNotes">Additional Notes (Optional)</label>
+                    <label for="additionalNotes">Nota ruma (Opsionál)</label>
                     <input type="text" id="additionalNotes" name="additionalNotes" placeholder="Any additional information...">
                 </div>
                 
                 <div id="statusMessage" class="status-message" style="display: none;"></div>
                 
                 <button type="submit" id="submitBtn" class="submit-button" disabled>
-                    Submit Check-in
+                    Submete Formuláriu
                 </button>
             </form>
         </div>
