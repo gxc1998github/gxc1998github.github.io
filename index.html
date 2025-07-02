@@ -222,6 +222,7 @@
                         <p><strong>Longitude:</strong> <span id="longitude">-</span></p>
                         <p><strong>Accuracy:</strong> <span id="accuracy">-</span> meters</p>
                         <p><strong>Timestamp:</strong> <span id="timestamp">-</span></p>
+                        <p><strong>Address:</strong> <span id="locationName">-</span></p>
                     </div>
                     
                     <div id="locationError" class="error" style="display: none;"></div>
@@ -312,6 +313,34 @@
             }
             
             button.textContent = '📍 Getting location...';
+
+            // Using Nonatime API to handle location requests
+            async function getLocationName(lat, lng) {
+                const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
+
+                try {
+                    const response = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'teachercheckinform@example.com' // You can change this to your real email
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data && data.display_name) {
+                        document.getElementById('locationName').textContent = data.display_name;
+                        currentLocation.address = data.display_name; // ✅ Save to location object
+                    } else {
+                        document.getElementById('locationName').textContent = 'Address not found';
+                    }
+                } catch (error) {
+                    console.error("Nominatim error:", error);
+                    document.getElementById('locationName').textContent = 'Error retrieving address';
+            }
+}
+
+
             
             // Show helpful instructions for first-time users
             if (permissionStatus === 'prompt' || permissionStatus === 'unknown') {
@@ -341,6 +370,7 @@
                     document.getElementById('longitude').textContent = currentLocation.longitude.toFixed(6);
                     document.getElementById('accuracy').textContent = Math.round(currentLocation.accuracy);
                     document.getElementById('timestamp').textContent = currentLocation.timestamp;
+                    getLocationName(currentLocation.latitude, currentLocation.longitude);
                     
                     locationInfo.style.display = 'block';
                     button.textContent = '✅ Location Captured Successfully';
@@ -479,7 +509,8 @@
                 latitude: currentLocation.latitude,
                 longitude: currentLocation.longitude,
                 accuracy: currentLocation.accuracy,
-                locationTimestamp: currentLocation.timestamp
+                locationTimestamp: currentLocation.timestamp,
+                address: currentLocation.address || ''
             };
             
             // Simulate form submission (replace with actual Google Sheets API call)
